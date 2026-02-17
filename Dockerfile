@@ -1,4 +1,4 @@
-FROM rust:1.75-slim as rust-builder
+FROM rust:1.85-slim AS rust-builder
 WORKDIR /build
 RUN apt-get update && apt-get install -y pkg-config libssl-dev && rm -rf /var/lib/apt/lists/*
 COPY spidercrawl/ ./spidercrawl/
@@ -25,4 +25,4 @@ RUN pip install --no-cache-dir -e . && playwright install chromium
 ENV PYTHONPATH=/app
 ENV PORT=8000
 
-CMD uvicorn trustcheck_agent.main:app --host 0.0.0.0 --port $PORT
+CMD ["sh", "-c", "uvicorn trustcheck_agent.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
