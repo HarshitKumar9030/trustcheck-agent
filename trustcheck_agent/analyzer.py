@@ -1468,9 +1468,9 @@ def analyze(req: AnalyzeRequest) -> AnalyzeResponse:
             timings[name] = int((time.perf_counter() - start) * 1000)
 
     # Parallel fetch: RDAP, HTTP signals, TLS, robots.txt, screenshot
-    # Cap individual task timeouts at 8 s so the parallel phase finishes
-    # quickly and leaves headroom for the crawler + AI within Heroku's 30 s.
-    io_timeout = min(req.timeout_ms, 8000)
+    # Cap individual IO tasks at 15 s — they run in parallel so wall-clock
+    # cost equals the slowest one, not the sum.
+    io_timeout = min(req.timeout_ms, 15000)
     with ThreadPoolExecutor(max_workers=7) as pool:
         futures = {
             pool.submit(timed, "rdap", lambda: _fetch_rdap_domain_age_days(hostname, io_timeout)): "rdap",
