@@ -1,6 +1,7 @@
 FROM rust:1.85-slim AS rust-builder
 WORKDIR /build
-RUN apt-get update && apt-get install -y pkg-config libssl-dev && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y pkg-config libssl-dev python3 python3-dev && rm -rf /var/lib/apt/lists/*
+ENV PYO3_PYTHON=python3
 COPY spidercrawl/ ./spidercrawl/
 RUN cd spidercrawl && cargo build --release
 
