@@ -21,7 +21,9 @@ COPY --from=rust-builder /build/spidercrawl/target/release/libspidercrawl.so /ap
 COPY pyproject.toml ./
 COPY trustcheck_agent/ ./trustcheck_agent/
 
-RUN pip install --no-cache-dir -e . && playwright install chromium
+ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
+RUN pip install --no-cache-dir -e . \
+    && python -m playwright install chromium
 
 ENV PYTHONPATH=/app
 ENV PORT=8000
